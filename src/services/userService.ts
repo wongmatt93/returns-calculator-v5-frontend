@@ -14,8 +14,8 @@ export const addNewProfile = async (
 ): Promise<UserProfile> =>
   (await axios.post(`${baseURL}/user_profiles`, profile)).data;
 
-export const addNewStock = async (
-  newStock: Stock,
-  uid: string
+export const updateUserProfile = async (
+  userProfile: UserProfile
 ): Promise<Stock> =>
-  (await axios.put(`${baseURL}/user_profiles/stocks/${uid}`, newStock)).data;
+  (await axios.put(`${baseURL}/user_profiles/${userProfile.uid}`, userProfile))
+    .data;

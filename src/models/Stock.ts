@@ -1,5 +1,6 @@
 export interface StockTransaction {
   quantity: number;
+  type: string;
   cost: number;
   date: string;
 }

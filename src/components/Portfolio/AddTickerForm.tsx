@@ -1,9 +1,9 @@
 import { FormEvent, useState } from "react";
 import { Form, Button } from "react-bootstrap";
 
-import UserProfile from "../../models/UserProfile";
 import { Stock } from "../../models/Stock";
-import { addNewStock } from "../../services/userService";
+import UserProfile from "../../models/UserProfile";
+import { updateUserProfile } from "../../services/userService";
 import "./AddTickerForm.css";
 
 interface Props {
@@ -34,8 +34,11 @@ const AddTickerForm = ({ userProfile, refreshProfile }: Props) => {
         dividendTransactions: [],
       };
 
+      // add stock to userProfile object
+      userProfile.stocks.push(newStock);
+
       // api call to send new Stock object to database
-      await addNewStock(newStock, userProfile.uid);
+      await updateUserProfile(userProfile);
       await refreshProfile();
 
       setSubmitting(false);

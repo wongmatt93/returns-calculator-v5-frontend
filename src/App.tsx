@@ -12,6 +12,7 @@ import PortfolioPage from "./components/Portfolio/PortfolioPage";
 import "./App.css";
 import { useContext } from "react";
 import AuthContext from "./context/AuthContext";
+import PositionDetailsPage from "./components/PositionDetails/PositionDetailsPage";
 
 function App() {
   const { userProfile, refreshProfile } = useContext(AuthContext);
@@ -28,6 +29,15 @@ function App() {
                 path="/portfolio"
                 element={
                   <PortfolioPage
+                    userProfile={userProfile}
+                    refreshProfile={refreshProfile}
+                  />
+                }
+              />
+              <Route
+                path="/position-details/:ticker"
+                element={
+                  <PositionDetailsPage
                     userProfile={userProfile}
                     refreshProfile={refreshProfile}
                   />
