@@ -26,6 +26,7 @@ const ActivePositionTable = ({ activePositions, navigate }: Props) => {
       <tbody>
         {activePositions.map((stock) => (
           <ActivePositionRow
+            key={stock.ticker}
             stock={stock}
             handleClick={() => navigate(`/position-details/${stock.ticker}`)}
           />

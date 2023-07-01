@@ -50,6 +50,8 @@ const TransactionsOffcanvas = ({
         )}
         {transactionType === "Open Options" && (
           <OpenOptionsForm
+            userProfile={userProfile}
+            ticker={ticker}
             handleClose={handleClose}
             refreshProfile={refreshProfile}
           />
