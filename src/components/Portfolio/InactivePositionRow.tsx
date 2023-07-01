@@ -1,5 +1,8 @@
-import { Stock } from "../../models/Stock";
-import { getStockProfit } from "../../util/stockFunctions";
+import { Stock, StockTransaction } from "../../models/Stock";
+import {
+  getStockProfit,
+  sortStockTransactionTypes,
+} from "../../util/stockFunctions";
 import "./InactivePositionRow.css";
 
 interface Props {
@@ -10,7 +13,9 @@ interface Props {
 const InactivePositionRow = ({ stock, handleClick }: Props) => {
   // variables
   const { ticker, stockTransactions } = stock;
-  const stockProfit: number = getStockProfit(stockTransactions);
+  const sortedTransactions: { [id: string]: StockTransaction[] } =
+    sortStockTransactionTypes(stockTransactions);
+  const stockProfit: number = getStockProfit(sortedTransactions);
 
   return (
     <tr className="InactivePositionRow">

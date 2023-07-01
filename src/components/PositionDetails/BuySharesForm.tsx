@@ -1,9 +1,7 @@
 import { FormEvent, useState } from "react";
 import { Button, Form } from "react-bootstrap";
 
-import { StockTransaction } from "../../models/Stock";
 import UserProfile from "../../models/UserProfile";
-import { updateUserProfile } from "../../services/userService";
 import { addStockTransaction } from "../../util/stockFunctions";
 import "./BuySharesForm.css";
 

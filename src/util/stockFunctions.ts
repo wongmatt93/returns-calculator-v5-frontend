@@ -10,7 +10,7 @@ export const addStockTransaction = async (
   date: string,
   type: string
 ): Promise<void> => {
-  // create new stockTransactionObject
+  // create new stockTransaction object
   const newStockTransaction: StockTransaction = {
     quantity: parseFloat(quantity),
     type,
@@ -44,38 +44,41 @@ export const sortStockTransactionTypes = (
   return newObject;
 };
 
-export const getCurrentStockQuantity = (
-  stockTransactions: StockTransaction[]
-): number => {
-  const sortedTransactions: { [id: string]: StockTransaction[] } =
-    sortStockTransactionTypes(stockTransactions);
+export const getQuantity = (stockTransactions: StockTransaction[]) =>
+  stockTransactions.reduce((pv, cv) => cv.quantity + pv, 0);
 
-  const buyQuantity: number = sortedTransactions["buy"].reduce(
-    (pv, cv) => cv.quantity + pv,
-    0
-  );
-  const sellQuantity: number = sortedTransactions["sell"].reduce(
-    (pv, cv) => cv.quantity + pv,
-    0
-  );
+export const getCurrentStockQuantity = (sortedTransactions: {
+  [id: string]: StockTransaction[];
+}): number => {
+  const buyQuantity: number = getQuantity(sortedTransactions["buy"]);
+  const sellQuantity: number = getQuantity(sortedTransactions["sell"]);
 
   return buyQuantity - sellQuantity;
 };
 
-export const getStockProfit = (
-  stockTransactions: StockTransaction[]
-): number => {
-  const sortedTransactions: { [id: string]: StockTransaction[] } =
-    sortStockTransactionTypes(stockTransactions);
+export const getCost = (stockTransaction: StockTransaction[]): number =>
+  stockTransaction.reduce((pv, cv) => cv.cost + pv, 0);
 
-  const buyCost: number = sortedTransactions["buy"].reduce(
-    (pv, cv) => cv.cost + pv,
-    0
-  );
-  const sellCost: number = sortedTransactions["sell"].reduce(
-    (pv, cv) => cv.cost + pv,
-    0
-  );
+export const getCurrentStockCostBasis = (sortedTransactions: {
+  [id: string]: StockTransaction[];
+}): number => {
+  const buyCostBasis: number = getCost(sortedTransactions["buy"]);
+  const sellCostBasis: number = getCost(sortedTransactions["sell"]);
 
-  return sellCost - buyCost;
+  return buyCostBasis - sellCostBasis;
+};
+
+export const getStockProfit = (sortedTransactions: {
+  [id: string]: StockTransaction[];
+}): number => {
+  const buyQuantity: number = getQuantity(sortedTransactions["buy"]);
+  const buyCostBasis: number = getCost(sortedTransactions["buy"]);
+  const buyAverage: number = buyCostBasis / buyQuantity || 0;
+  const sellQuantity: number = getQuantity(sortedTransactions["sell"]);
+  const sellCostBasis: number = getCost(sortedTransactions["sell"]);
+  const sellAverage: number = sellCostBasis / sellQuantity || 0;
+
+  return buyQuantity - sellQuantity
+    ? (sellAverage - buyAverage) * sellQuantity
+    : sellCostBasis - buyCostBasis;
 };

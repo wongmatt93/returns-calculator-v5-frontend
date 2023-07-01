@@ -4,9 +4,12 @@ import { NavigateFunction, useNavigate } from "react-router-dom";
 import AddTickerForm from "./AddTickerForm";
 import ActivePositionTable from "./ActivePositionTable";
 import InactivePositionTable from "./InactivePositionTable";
-import { Stock } from "../../models/Stock";
+import { Stock, StockTransaction } from "../../models/Stock";
 import UserProfile from "../../models/UserProfile";
-import { getCurrentStockQuantity } from "../../util/stockFunctions";
+import {
+  getCurrentStockQuantity,
+  sortStockTransactionTypes,
+} from "../../util/stockFunctions";
 
 import "./PortfolioPage.css";
 
@@ -25,9 +28,10 @@ const PortfolioPage = ({ userProfile, refreshProfile }: Props) => {
 
   // sort stock positions
   userProfile.stocks.forEach((stock) => {
-    const currentStockQuantity: number = getCurrentStockQuantity(
-      stock.stockTransactions
-    );
+    const sortedTransactions: { [id: string]: StockTransaction[] } =
+      sortStockTransactionTypes(stock.stockTransactions);
+    const currentStockQuantity: number =
+      getCurrentStockQuantity(sortedTransactions);
 
     currentStockQuantity > 0
       ? activePositions.push(stock)
