@@ -3,8 +3,10 @@ import { Button } from "react-bootstrap";
 import { useParams } from "react-router-dom";
 
 import UserProfile from "../../models/UserProfile";
+import { Stock } from "../../models/Stock";
 import TransactionsOffcanvas from "./TransactionsOffcanvas";
 import "./PositionDetailsPage.css";
+import OpenOptionsTable from "./OpenOptionsTable";
 
 interface Props {
   userProfile: UserProfile;
@@ -16,6 +18,12 @@ const PositionDetailsPage = ({ userProfile, refreshProfile }: Props) => {
   const [transactionType, setTransactionType] = useState<string>("");
   const ticker: string | undefined = useParams().ticker;
 
+  // variables
+  // checks to see if user has this stock in their portfolio
+  const userStockPosition: Stock | undefined = userProfile.stocks.find(
+    (stock) => stock.ticker === ticker
+  );
+
   // functions
   const handleClose = (): void => setTransactionType("");
   const handleShow = (transactionType: string): void =>
@@ -23,7 +31,7 @@ const PositionDetailsPage = ({ userProfile, refreshProfile }: Props) => {
 
   return (
     <main className="PositionDetailsPage">
-      {ticker && (
+      {ticker && userStockPosition && (
         <>
           <h2>{ticker}</h2>
           <Button onClick={() => handleShow("Buy Shares")}>Buy Shares</Button>
@@ -33,6 +41,11 @@ const PositionDetailsPage = ({ userProfile, refreshProfile }: Props) => {
           <Button onClick={() => handleShow("Add Dividends")}>
             Add Dividends
           </Button>
+          <OpenOptionsTable
+            userProfile={userProfile}
+            optionTransactions={userStockPosition.optionTransactions}
+            refreshProfile={refreshProfile}
+          />
           <TransactionsOffcanvas
             userProfile={userProfile}
             ticker={ticker}

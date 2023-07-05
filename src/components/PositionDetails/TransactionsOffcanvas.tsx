@@ -3,6 +3,7 @@ import { Offcanvas } from "react-bootstrap";
 import UserProfile from "../../models/UserProfile";
 import AddDividendsForm from "./AddDividendsForm";
 import BuySharesForm from "./BuySharesForm";
+import CloseOptionsForm from "./CloseOptionsForm";
 import OpenOptionsForm from "./OpenOptionsForm";
 import SellSharesForm from "./SellSharesForm";
 
@@ -56,6 +57,7 @@ const TransactionsOffcanvas = ({
             refreshProfile={refreshProfile}
           />
         )}
+        {transactionType === "Close Options" && <CloseOptionsForm />}
         {transactionType === "Add Dividends" && (
           <AddDividendsForm
             handleClose={handleClose}
