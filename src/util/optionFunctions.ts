@@ -37,22 +37,49 @@ export const addOptionTransaction = async (
 // get option summary
 export const getOptionInfo = (option: OptionTransaction): string => {
   const { expirationDate, strike, callPut } = option;
-  return `${expirationDate} ${strike} ${callPut}`;
+  return `${expirationDate} $${strike.toFixed(2)} ${callPut}`;
 };
 
-// // get open options
-// const openOptions = (options: OptionTransaction[]): OptionTransaction[] => {
-//   // object to store different options
-//   const optionsMap: { [id: string]: OptionTransaction[] } = {};
+// get open options
+export const getOpenOptions = (
+  options: OptionTransaction[]
+): { [id: string]: { [id: string]: number } } => {
+  // this creates an object with all of the different options in portfolio
+  const optionsMap: { [id: string]: { [id: string]: number } } = {};
+  options.forEach((option) => {
+    const { type, quantity } = option;
+    const summary: string = getOptionInfo(option);
 
-//   // array method to update the map
-//   options.forEach((option) => {
-//     const optionInfo: string = getOptionInfo(option);
+    if (!optionsMap[summary]) {
+      optionsMap[summary] = {
+        bto: 0,
+        sto: 0,
+      };
+    }
 
-//     if (!optionsMap[optionInfo]) {
-//       optionsMap[optionInfo] = [];
-//       optionsMap[optionInfo].push(option);
-//     } else {
-//     }
-//   });
-// };
+    // adds quantity if open, subtracts quantity if close
+    if (type === "bto") {
+      optionsMap[summary].bto += quantity;
+    } else if (type === "sto") {
+      optionsMap[summary].sto += quantity;
+    } else if (type === "btc") {
+      optionsMap[summary].bto -= quantity;
+    } else if (type === "stc") {
+      optionsMap[summary].sto -= quantity;
+    }
+  });
+
+  // delete any options that are empty
+  Object.keys(optionsMap).forEach((option) => {
+    const { bto, sto } = optionsMap[option];
+    if (!bto && !sto) {
+      delete optionsMap[option];
+    } else if (!bto) {
+      delete optionsMap[option].bto;
+    } else if (!sto) {
+      delete optionsMap[option].sto;
+    }
+  });
+
+  return optionsMap;
+};
